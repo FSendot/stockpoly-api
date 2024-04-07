@@ -40,6 +40,7 @@ func getProfileHandler() http.Handler {
 		err := decoder.Decode(&movements)
 		if err != nil {
 			http.Error(w, "Error reading the request body", http.StatusBadRequest)
+			fmt.Printline("Se rompió algo en el JSON")
 			return
 		}
 
