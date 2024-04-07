@@ -49,7 +49,7 @@ func getProfileHandler() http.Handler {
 
 		client := resty.New()
 
-		promptFormatted := fmt.Sprintf("%s%s%s", `En base a la empresa correspondiente al Stock, analizar los aumentos y caidas de la bolsa:`, movementsEs, `¿Qué descripción extremadamente breve se haría de la situación de esta empresa, teniendo en cuenta el contexto histórico a partir de las fechas de las acciones que posee? La descripción DEBE ser breve, para que entre en un tablero de juego de mesa.`)
+		promptFormatted := fmt.Sprintf("%s%s%s", `En base a la empresa correspondiente al Stock, dar su nombre de la empresa real y el mercado al que apunta, y analizar los aumentos y caidas de la bolsa:`, movementsEs, `¿Qué descripción extremadamente breve se haría de la situación de esta empresa, teniendo en cuenta el contexto histórico a partir de las fechas de las acciones que posee? La descripción DEBE ser breve, para que entre en un tablero de juego de mesa.`)
 		response, err := client.R().
 			SetAuthToken(apiKey).
 			SetHeader("Content-Type", "application/json").
