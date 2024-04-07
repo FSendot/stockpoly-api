@@ -43,7 +43,7 @@ func getProfileHandler() http.Handler {
 			return
 		}
 
-		movementsEs := movements.StringES()
+	//	movementsEs := movements.StringES()
 		// Use your API KEY here
 		apiKey := os.Getenv("API_KEY")
 		fmt.Println(apiKey)
