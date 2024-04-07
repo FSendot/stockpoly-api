@@ -31,56 +31,56 @@ type Transaction struct {
 	StockAction string  `json:"stockAction"` // Buy or Sell
 }
 
-func getProfileHandler(w http.ResponseWriter, r *http.Request) {
+func getProfileHandler() http.Handler{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//Get body
+		decoder := json.NewDecoder(r.Body)
+		var movements BodyOfStocks
 
-	//Get body
+		err := decoder.Decode(&movements)
+		if err != nil {
+			http.Error(w, "Error reading the request body", http.StatusBadRequest)
+			return
+		}
 
-	decoder := json.NewDecoder(r.Body)
-	var movements BodyOfStocks
+		movementsEs := movements.StringES()
+		// Use your API KEY here
+		apiKey := os.Getenv("API_KEY")
+		client := resty.New()
 
-	err := decoder.Decode(&movements)
-	if err != nil {
-		http.Error(w, "Error reading the request body", http.StatusBadRequest)
-		return
-	}
+		promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
 
-	movementsEs := movements.StringES()
-	// Use your API KEY here
-	apiKey := os.Getenv("API_KEY")
-	client := resty.New()
+	Respondeme unicamente con el tipo de inversor, con una sola palabra, en español.`)
+		response, err := client.R().
+			SetAuthToken(apiKey).
+			SetHeader("Content-Type", "application/json").
+			SetBody(map[string]interface{}{
+				"model": "gpt-3.5-turbo",
+				"messages": []interface{}{map[string]interface{}{"role": "system",
+					"content": promptFormatted}},
+				"max_tokens": 50,
+			}).
+			Post(apiEndpoint)
 
-	promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
+		if err != nil {
+			log.Fatalf("Error while sending send the request: %v", err)
+		}
 
-Respondeme unicamente con el tipo de inversor, con una sola palabra, en español.`)
-	response, err := client.R().
-		SetAuthToken(apiKey).
-		SetHeader("Content-Type", "application/json").
-		SetBody(map[string]interface{}{
-			"model": "gpt-3.5-turbo",
-			"messages": []interface{}{map[string]interface{}{"role": "system",
-				"content": promptFormatted}},
-			"max_tokens": 50,
-		}).
-		Post(apiEndpoint)
+		body := response.Body()
 
-	if err != nil {
-		log.Fatalf("Error while sending send the request: %v", err)
-	}
+		var data map[string]interface{}
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			fmt.Println("Error while decoding JSON response:", err)
+			return
+		}
 
-	body := response.Body()
+		// Extract the content from the JSON response
+		content := data["choices"].([]interface{})[0].(map[string]interface{})["message"].(map[string]interface{})["content"].(string)
 
-	var data map[string]interface{}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		fmt.Println("Error while decoding JSON response:", err)
-		return
-	}
-
-	// Extract the content from the JSON response
-	content := data["choices"].([]interface{})[0].(map[string]interface{})["message"].(map[string]interface{})["content"].(string)
-
-	// Send the response back to the client
-	w.Write([]byte(content))
+		// Send the response back to the client
+		w.Write([]byte(content))
+	})
 }
 
 func getEnvHandler() http.Handler {
@@ -94,7 +94,7 @@ func main() {
 	router := http.NewServeMux()
 
 	// API
-	router.HandlerFunc("POST /profile", getProfileHandler)
+	router.Handle("POST /profile", getProfileHandler())
 	router.Handle("GET /env", getEnvHandler())
 
 	port := os.Getenv("PORT")
