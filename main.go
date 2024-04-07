@@ -51,7 +51,6 @@ func getProfileHandler() http.Handler{
 		promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
 
 	Respondeme unicamente con el tipo de inversor, con una sola palabra, en español.`)
-		fmt.Println(apiKey)
 		response, err := client.R().
 			SetAuthToken(apiKey).
 			SetHeader("Content-Type", "application/json").
@@ -99,6 +98,8 @@ func main() {
 	router.Handle("GET /env", getEnvHandler())
 
 	port := os.Getenv("PORT")
+	fmt.Println(os.Getenv("API_KEY"))
+
 
 	if port == "" {
 		port = "3000"
