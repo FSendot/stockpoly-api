@@ -89,7 +89,7 @@ func main() {
 
 	// API
 	router.HandleFunc("POST /profile", getProfileHandler)
-	router.HandleFunc("GET /env", func(w responseWriter, c *http.Request) error {
+	router.HandleFunc("GET /env", func(w http.ResponseWriter, c *http.Request) error {
 		return fmt.Fprintln(w, "Hello, ENV!" + os.Getenv("TEST_ENV"))
 	})
 
