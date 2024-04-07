@@ -6,10 +6,10 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
-	"log"
+//	"log"
 	"net/http"
 
-	"github.com/go-resty/resty/v2"
+//	"github.com/go-resty/resty/v2"
 )
 
 const (
