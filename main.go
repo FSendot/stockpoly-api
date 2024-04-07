@@ -31,7 +31,7 @@ type Transaction struct {
 	StockAction string  `json:"stockAction"` // Buy or Sell
 }
 
-func getProfileHandler() http.Handler{
+func getProfileHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//Get body
 		decoder := json.NewDecoder(r.Body)
@@ -46,6 +46,7 @@ func getProfileHandler() http.Handler{
 		movementsEs := movements.StringES()
 		// Use your API KEY here
 		apiKey := os.Getenv("API_KEY")
+		w.Write(apiKey)
 		client := resty.New()
 
 		promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
