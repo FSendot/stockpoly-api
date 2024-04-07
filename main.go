@@ -28,7 +28,7 @@ func (b BodyOfStocks) StringES() string {
 type Transaction struct {
 	StockName   string  `json:"stockName"`
 	StockPrice  float64 `json:"stockPrice"`
-	StockAction string  `json:"stockAction"` // Buy or Sell
+	DateTime string  `json:"dateTime"` // Buy or Sell
 }
 
 func getProfileHandler() http.Handler {
@@ -46,12 +46,10 @@ func getProfileHandler() http.Handler {
 		movementsEs := movements.StringES()
 		// Use your API KEY here
 		apiKey := os.Getenv("API_KEY")
-		fmt.Println(apiKey)
+
 		client := resty.New()
 
-		promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
-
-	Respondeme unicamente con el tipo de inversor, con una sola palabra, en español.`)
+		promptFormatted := fmt.Sprintf("%s%s%s", `En base a la empresa correspondiente al Stock, analizar los aumentos y caidas de la bolsa:`, movementsEs, `¿Qué descripción extremadamente breve se haría de la situación de esta empresa, teniendo en cuenta el contexto histórico a partir de las fechas de las acciones que posee? La descripción DEBE ser breve, para que entre en un tablero de juego de mesa.`)
 		response, err := client.R().
 			SetAuthToken(apiKey).
 			SetHeader("Content-Type", "application/json").
