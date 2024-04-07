@@ -79,7 +79,7 @@ func getProfileHandler() http.Handler {
 		// Extract the content from the JSON response
 		content := data["choices"].([]interface{})[0].(map[string]interface{})["message"].(map[string]interface{})["content"].(string)
 
-		fmt.Println([]byte(content))
+		//fmt.Println([]byte(content))
 
 		// Send the response back to the client
 		w.Write([]byte(content))
