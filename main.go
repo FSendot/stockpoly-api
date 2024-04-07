@@ -46,7 +46,8 @@ func getProfileHandler() http.Handler {
 		movementsEs := movements.StringES()
 		// Use your API KEY here
 		apiKey := os.Getenv("API_KEY")
-		w.Write(apiKey)
+		fmt.Println(apiKey)
+		/*
 		client := resty.New()
 
 		promptFormatted := fmt.Sprintf("%s%s%s", `Conservador Moderado Agresivo Teniendo en cuenta estos 3 perfiles. si compro en:`, movementsEs, `, que tipo de perfil tendria?
@@ -81,6 +82,7 @@ func getProfileHandler() http.Handler {
 
 		// Send the response back to the client
 		w.Write([]byte(content))
+		*/
 	})
 }
 
