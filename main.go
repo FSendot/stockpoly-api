@@ -83,15 +83,19 @@ Respondeme unicamente con el tipo de inversor, con una sola palabra, en español
 	w.Write([]byte(content))
 }
 
+func getEnvHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, c *http.Request) {
+			fmt.Fprintln(w, "Hello, ENV!" + os.Getenv("TEST_ENV"))
+	})
+}
+
 func main() {
 
 	router := http.NewServeMux()
 
 	// API
-	router.HandleFunc("POST /profile", getProfileHandler)
-	router.HandleFunc("GET /env", func(w http.ResponseWriter, c *http.Request) error {
-		return fmt.Fprintln(w, "Hello, ENV!" + os.Getenv("TEST_ENV"))
-	})
+	router.HandlerFunc("POST /profile", getProfileHandler)
+	router.Handle("GET /env", getEnvHandler())
 
 	port := os.Getenv("PORT")
 
