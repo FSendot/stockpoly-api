@@ -90,7 +90,7 @@ func main() {
 	// API
 	router.HandleFunc("POST /profile", getProfileHandler)
 	router.HandleFunc("GET /env", func(w responseWriter, c *http.Request) error {
-		return c.SendString("Hello, ENV!" + os.Getenv("TEST_ENV"))
+		return c.send("Hello, ENV!" + os.Getenv("TEST_ENV"))
 	})
 
 	port := os.Getenv("PORT")
